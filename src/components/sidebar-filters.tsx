@@ -26,9 +26,8 @@ interface SidebarFiltersProps {
   onFilter: (data: z.infer<typeof filterSchema>) => void;
   onClear: () => void;
 }
-
-export function SidebarFilters({ onFilter }: SidebarFiltersProps) {
-  const { register, handleSubmit, control, watch } = useForm<
+export function SidebarFilters({ onFilter, onClear }: SidebarFiltersProps) {
+  const { register, handleSubmit, control, watch, reset } = useForm<
     z.infer<typeof filterSchema>
   >({
     resolver: zodResolver(filterSchema),
@@ -37,11 +36,25 @@ export function SidebarFilters({ onFilter }: SidebarFiltersProps) {
       status: [],
       vendorType: [],
       serviceOffering: [],
+      startDate: undefined,
+      endDate: undefined,
     },
   });
 
   const startDate = watch("startDate");
   const endDate = watch("endDate");
+
+  const clearFilters = () => {
+    reset({
+      postcode: "",
+      status: [],
+      vendorType: [],
+      serviceOffering: [],
+      startDate: undefined,
+      endDate: undefined,
+    });
+    onClear();
+  };
 
   return (
     <form
@@ -171,12 +184,19 @@ export function SidebarFilters({ onFilter }: SidebarFiltersProps) {
           </div>
         </div>
       </div>
-      <div className="p-6 pt-4 border-t border-gray-200 bg-slate-50 flex justify-center items-center">
+      <div className="p-6 pt-4 border-t border-gray-200 bg-slate-50 flex justify-between items-center">
         <Button
           type="submit"
-          className="w-1/2 bg-blue-600 hover:bg-blue-700 text-lg font-semibold  rounded-full py-3 h-auto"
+          className=" bg-blue-600 hover:bg-blue-700 px-6 cursor-pointer font-semibold"
         >
           Filter
+        </Button>
+        <Button
+          type="button"
+          onClick={clearFilters}
+          className="bg-transparent text-[#525758] cursor-pointer hover:text-white font-semibold px-6 border-2"
+        >
+          Clear Filters
         </Button>
       </div>
     </form>
