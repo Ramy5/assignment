@@ -16,8 +16,8 @@ export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
   return (
-    <Pagination className="flex items-center justify-start py-4">
-      <PaginationContent>
+    <Pagination className="flex items-center justify-center sm:justify-start py-4">
+      <PaginationContent className="flex-wrap">
         <PaginationItem>
           <PaginationPrevious
             href="#"

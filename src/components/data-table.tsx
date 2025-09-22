@@ -22,6 +22,7 @@ import { DataTablePagination } from "./data-table-pagination";
 import { EditDialog } from "./edit-dialog";
 import { columns as columnDefFn } from "./columns";
 import type { ServiceProvider } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: (
@@ -46,6 +47,10 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
+  const [columnPinning, setColumnPinning] = React.useState({
+    left: ["select"],
+    right: ["actions"],
+  });
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedUser, setSelectedUser] =
     React.useState<ServiceProvider | null>(null);
@@ -77,11 +82,25 @@ export function DataTable<TData, TValue>({
         setColumnFilters(updaterOrValue);
       }
     },
+    onColumnPinningChange: (updaterOrValue) => {
+      if (typeof updaterOrValue === "function") {
+        setColumnPinning((prev) => ({
+          left: updaterOrValue(prev)?.left || [],
+          right: updaterOrValue(prev)?.right || [],
+        }));
+      } else {
+        setColumnPinning({
+          left: updaterOrValue?.left || [],
+          right: updaterOrValue?.right || [],
+        });
+      }
+    },
     state: {
       sorting,
       rowSelection,
       globalFilter,
       columnFilters,
+      columnPinning, // Don't forget to pass the state to the table!
     },
     initialState: {
       pagination: { pageSize: 10 },
@@ -96,21 +115,40 @@ export function DataTable<TData, TValue>({
         user={selectedUser}
         onUpdateUser={onUpdateUser}
       />
-      <div className="flex-grow rounded-md border overflow-y-auto h-[500px] scrollbar-none">
+      <div className="rounded-md border overflow-auto relative">
         <Table>
-          <TableHeader className="bg-gray-50 sticky top-0 z-10">
+          <TableHeader className="bg-gray-50 z-20">
+            {" "}
+            {/* Add z-index to header */}
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const isPinned = header.column.getIsPinned();
+                  return (
+                    // FIX: APPLY DYNAMIC STYLES FOR PINNING
+                    <TableHead
+                      key={header.id}
+                      className={cn(isPinned && "sticky bg-gray-50 z-10")}
+                      style={{
+                        left:
+                          isPinned === "left"
+                            ? `${header.column.getStart()}px`
+                            : undefined,
+                        right:
+                          isPinned === "right"
+                            ? `${header.column.getAfter()}px`
+                            : undefined,
+                      }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -121,14 +159,34 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const isPinned = cell.column.getIsPinned();
+                    return (
+                      // FIX: APPLY DYNAMIC STYLES FOR PINNING
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          isPinned && "sticky bg-white z-10",
+                          row.getIsSelected() && isPinned && "bg-muted z-10" // Keep color on selected rows
+                        )}
+                        style={{
+                          left:
+                            isPinned === "left"
+                              ? `${cell.column.getStart()}px`
+                              : undefined,
+                          right:
+                            isPinned === "right"
+                              ? `${cell.column.getAfter()}px`
+                              : undefined,
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

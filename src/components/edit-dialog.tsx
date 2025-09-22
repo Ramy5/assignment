@@ -71,51 +71,54 @@ export function EditDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-[95%] sm:max-w-md md:max-w-lg">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Edit User: {user.email}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
+          <div className="grid gap-6 py-4">
+            {/* Field Wrapper for Email */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-x-4 gap-y-2">
+              <Label htmlFor="email" className="sm:text-right">
                 Email
               </Label>
-              <Input id="email" {...register("email")} className="col-span-3" />
-              {errors.email && (
-                <p className="col-span-4 text-red-500 text-sm text-right">
-                  {errors.email.message}
-                </p>
-              )}
+              <div className="sm:col-span-3">
+                <Input id="email" {...register("email")} />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-x-4 gap-y-2">
+              <Label htmlFor="phone" className="sm:text-right">
                 Phone
               </Label>
-              <Input id="phone" {...register("phone")} className="col-span-3" />
-              {errors.phone && (
-                <p className="col-span-4 text-red-500 text-sm text-right">
-                  {errors.phone.message}
-                </p>
-              )}
+              <div className="sm:col-span-3">
+                <Input id="phone" {...register("phone")} />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="postcode" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-x-4 gap-y-2">
+              <Label htmlFor="postcode" className="sm:text-right">
                 Postcode
               </Label>
-              <Input
-                id="postcode"
-                {...register("postcode")}
-                className="col-span-3"
-              />
-              {errors.postcode && (
-                <p className="col-span-4 text-red-500 text-sm text-right">
-                  {errors.postcode.message}
-                </p>
-              )}
+              <div className="sm:col-span-3">
+                <Input id="postcode" {...register("postcode")} />
+                {errors.postcode && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.postcode.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-x-4 gap-y-2">
+              <Label htmlFor="status" className="sm:text-right">
                 Status
               </Label>
               <Controller
@@ -126,7 +129,7 @@ export function EditDialog({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="col-span-3">
+                    <SelectTrigger className="sm:col-span-3">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -139,13 +142,19 @@ export function EditDialog({
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-0">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" className="w-full sm:w-auto">
+              Save Changes
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

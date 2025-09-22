@@ -59,9 +59,10 @@ export function SidebarFilters({ onFilter, onClear }: SidebarFiltersProps) {
   return (
     <form
       onSubmit={handleSubmit(onFilter)}
-      className="flex flex-col h-full bg-slate-50 rounded-[10px] overflow-y-auto scrollbar-none"
+      className="flex flex-col h-full bg-slate-50 rounded-[10px] overflow-y-auto scrollbar-none w-full"
     >
-      <div className="p-6 space-y-8 flex-1">
+      {/* RESPONSIVE CHANGE: Reduced padding on small screens */}
+      <div className="p-4 sm:p-6 space-y-8 flex-1 w-full">
         <div className="flex items-center space-x-2">
           <img src="/logo.svg" alt="Gler Logo" className="h-16 w-44" />
         </div>
@@ -106,7 +107,8 @@ export function SidebarFilters({ onFilter, onClear }: SidebarFiltersProps) {
             <Label className="font-semibold text-gray-800">
               Date Registered
             </Label>
-            <div className="mt-2 grid grid-cols-2 gap-2">
+            {/* RESPONSIVE CHANGE: Stacks to 1 column on mobile, 2 on larger screens */}
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Controller
                 name="startDate"
                 control={control}
@@ -184,17 +186,18 @@ export function SidebarFilters({ onFilter, onClear }: SidebarFiltersProps) {
           </div>
         </div>
       </div>
-      <div className="p-6 pt-4 border-t border-gray-200 bg-slate-50 flex justify-between items-center">
+      {/* RESPONSIVE CHANGE: Stacks buttons vertically on mobile */}
+      <div className="p-4 sm:p-6 pt-4 border-t border-gray-200 bg-slate-50 flex flex-col sm:flex-row sm:justify-between items-center gap-3">
         <Button
           type="submit"
-          className=" bg-blue-600 hover:bg-blue-700 px-6 cursor-pointer font-semibold"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 px-6 cursor-pointer font-semibold"
         >
           Filter
         </Button>
         <Button
           type="button"
           onClick={clearFilters}
-          className="bg-transparent text-[#525758] cursor-pointer hover:text-white font-semibold px-6 border-2"
+          className="w-full sm:w-auto bg-transparent text-[#525758] cursor-pointer hover:text-white font-semibold px-6 border-2"
         >
           Clear Filters
         </Button>

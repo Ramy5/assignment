@@ -6,7 +6,7 @@ import type { ServiceProvider } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 
 const tableHeader = (text: string) => (
-  <div className="uppercase text-xs font-medium text-gray-500 tracking-wider">
+  <div className="uppercase text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
     {text}
   </div>
 );
@@ -28,15 +28,18 @@ export const columns = (
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
-        className="border-[#4E4636] cursor-pointer"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center pr-3">
+        <Checkbox
+          className="border-[#4E4636] cursor-pointer"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
+    enablePinning: true,
   },
   {
     accessorKey: "email",
@@ -54,6 +57,7 @@ export const columns = (
       <div className="font-medium">{row.getValue("email")}</div>
     ),
   },
+  // ... other columns remain the same
   { accessorKey: "phone", header: () => tableHeader("Phone Number") },
   { accessorKey: "postcode", header: () => tableHeader("Postcode") },
   { accessorKey: "vendorType", header: () => tableHeader("Vendor Type") },
@@ -98,5 +102,6 @@ export const columns = (
         </Button>
       );
     },
+    enablePinning: true,
   },
 ];
